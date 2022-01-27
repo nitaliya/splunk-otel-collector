@@ -202,8 +202,8 @@ def run_win_chef_apply(configs, chef_version, CHEF_CMD):
         print(output)
 
 def verify_win_reg(access_key, name, value):
-    value_ , regtype = winreg.QueryValueEx(access_key, name)
-    assert value_ == value
+    data , regtype = winreg.QueryValueEx(access_key, name)
+    assert data == value
 
 def verify_win_env():
     access_registry = winreg.ConnectRegistry(None,winreg.HKEY_LOCAL_MACHINE)
