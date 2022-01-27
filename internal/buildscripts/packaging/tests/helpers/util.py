@@ -19,6 +19,7 @@ import time
 from contextlib import contextmanager
 from io import BytesIO
 from pathlib import Path
+import subprocess
 
 import docker
 
@@ -138,3 +139,18 @@ def service_is_running(container, service_name=SERVICE_NAME, service_owner=SERVI
     cmd = f"sh -ec 'systemctl status {service_name} && pgrep -a -u {service_owner} -f {process}'"
     code, _ = run_container_cmd(container, cmd, exit_code=None)
     return code == 0
+
+def run_win_command(cmd, returncodes=None, shell=True, **kwargs):
+    if returncodes is None:
+        returncodes = [0]
+    print('running "%s" ...' % cmd)
+    # pylint: disable=subprocess-run-check
+    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=shell, close_fds=False, **kwargs)
+    output = proc.stdout.decode("utf-8")
+    if returncodes:
+        assert proc.returncode in returncodes, output
+    print(output)
+    return proc
+
+def has_choco():
+    return run_win_command("choco --version", []).returncode == 0
