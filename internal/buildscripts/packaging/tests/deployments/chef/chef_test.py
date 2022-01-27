@@ -15,6 +15,7 @@
 import json
 import glob
 import os
+import subprocess
 import shutil
 import string
 import tempfile
@@ -65,7 +66,7 @@ SPLUNK_COLLECTD_DIR = f"{SPLUNK_BUNDLE_DIR}/run/collectd"
 # CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
 CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
 
-CHEF_CMD = "chef-client -z -o 'recipe[splunk-otel-collector::default]' -j /root/test_attrs.json"
+CHEF_CMD = "chef-client -z -o 'recipe[splunk-otel-collector::default]' -j {0}"
 
 def run_chef_apply(container, configs, chef_version, CHEF_CMD):
     with tempfile.NamedTemporaryFile(mode="w+") as fd:
@@ -75,7 +76,7 @@ def run_chef_apply(container, configs, chef_version, CHEF_CMD):
         if chef_version == "latest" or int(chef_version.split(".")[0]) >= 15:
             CHEF_CMD += " --chef-license accept-silent"
         copy_file_into_container(container, fd.name, "/root/test_attrs.json")
-
+    CHEF_CMD = CHEF_CMD.format("/root/test_attrs.json")
     run_container_cmd(container, CHEF_CMD)
 
 
@@ -173,6 +174,30 @@ def test_chef_with_fluentd(distro, chef_version):
                 if container.exec_run("test -f /var/log/td-agent/td-agent.log").exit_code == 0:
                     run_container_cmd(container, "cat /var/log/td-agent/td-agent.log")
 
+def run_win_chef_client(configs, chef_version, CHEF_CMD):
+    attributes_path = r"C:\chef\cookbooks\attributes.json"
+    with open(attributes_path, "w+", encoding="utf-8") as fd:
+        print(json.dumps(configs))
+        fd.write(json.dumps(configs))
+        fd.flush()
+        if chef_version == "latest" or int(chef_version.split(".")[0]) >= 15:
+            CHEF_CMD = CHEF_CMD.format(attributes_path) + " --chef-license accept-silent"
+        else:
+            CHEF_CMD = CHEF_CMD.format(attributes_path)
+        print('running "%s" ...' % CHEF_CMD)
+        proc = subprocess.run(
+            CHEF_CMD,
+            cwd=r"C:\chef\cookbooks",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=True,
+            close_fds=False,
+            check=False,
+        )
+        output = proc.stdout.decode("utf-8")
+        assert proc.returncode == 0, output
+        print(output)
+
 def run_win_chef_setup(chef_version):
     assert has_choco(), "choco not installed!"
     if run_win_command("chef-client --version", []).returncode == 0:
@@ -194,5 +219,21 @@ def run_win_chef_setup(chef_version):
 @pytest.mark.windows_only
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
 @pytest.mark.parametrize("chef_version", CHEF_VERSIONS)
-def test_chef_on_windows(chef_version):
+def test_chef_with_fluentd_on_windows(chef_version):
     run_win_chef_setup(chef_version)
+    try:
+        # for collector_version in ["0.34.0", "latest"]:
+        for collector_version in ["latest"]:
+            configs = {}
+            configs["splunk-otel-collector"] = {}
+            configs["splunk-otel-collector"]["splunk_access_token"] = SPLUNK_ACCESS_TOKEN
+            configs["splunk-otel-collector"]["splunk_realm"] = SPLUNK_REALM
+            configs["splunk-otel-collector"]["splunk_ingest_url"] = SPLUNK_INGEST_URL
+            configs["splunk-otel-collector"]["splunk_api_url"] = SPLUNK_API_URL
+            configs["splunk-otel-collector"]["splunk_service_user"] = SPLUNK_SERVICE_USER
+            configs["splunk-otel-collector"]["splunk_service_group"] = SPLUNK_SERVICE_GROUP
+            configs["splunk-otel-collector"]["with_fluentd"] = True
+            configs["splunk-otel-collector"]["collector_version"] = collector_version
+            run_chef_apply(configs, chef_version, CHEF_CMD)
+    finally:
+        print("Done")
