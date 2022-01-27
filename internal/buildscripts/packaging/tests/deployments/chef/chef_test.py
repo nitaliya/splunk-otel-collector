@@ -20,6 +20,7 @@ import shutil
 import string
 import tempfile
 import sys
+import winreg
 
 from pathlib import Path
 
@@ -45,7 +46,6 @@ WIN_CHEF_COOKBOOKS_DIR = r"C:\chef\cookbooks"
 WIN_COOKBOOK_SRC_DIR = os.path.join(WIN_REPO_ROOT_DIR, "deployments", "chef")
 WIN_COOKBOOK_DEST_DIR = os.path.join(WIN_CHEF_COOKBOOKS_DIR, "splunk-otel-collector")
 RUBYZIP_VERSION = "1.3.0"
-REGKEY = "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
 
 IMAGES_DIR = Path(__file__).parent.resolve() / "images"
 DEB_DISTROS = [df.split(".")[-1] for df in glob.glob(str(IMAGES_DIR / "deb" / "Dockerfile.*"))]
@@ -199,30 +199,25 @@ def run_win_chef_apply(configs, chef_version, CHEF_CMD):
         assert proc.returncode == 0, output
         print(output)
 
-def verify_win_env():
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_CONFIG'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_ACCESS_TOKEN'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_REALM'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_API_URL'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_INGEST_URL'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_TRACE_URL'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_URL'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_TOKEN'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_MEMORY_TOTAL_MIB'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_BUNDLE_DIR'")
-    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_COLLECTD_DIR'")
+def verify_win_reg(access_key, name, value):
+    value_ , regtype = winreg.QueryValueEx(access_key, name)
+    assert value_ == value
 
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_CONFIG') -ne '{SPLUNK_CONFIG}'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_ACCESS_TOKEN') -ne '{SPLUNK_ACCESS_TOKEN}'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_REALM') -ne '{SPLUNK_REALM}'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_API_URL') -ne '{SPLUNK_API_URL}'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_INGEST_URL') -ne '{SPLUNK_INGEST_URL}'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_TRACE_URL') -ne '{SPLUNK_INGEST_URL}/v2/trace'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_URL') -ne '{SPLUNK_INGEST_URL}/v1/log'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_TOKEN') -ne '{SPLUNK_ACCESS_TOKEN}'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_MEMORY_TOTAL_MIB') -ne '{SPLUNK_MEMORY_TOTAL_MIB}'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_BUNDLE_DIR') -ne '{SPLUNK_BUNDLE_DIR}'){exit 1}")
-    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_COLLECTD_DIR') -ne '{SPLUNK_COLLECTD_DIR}'){exit 1}")
+def verify_win_env():
+    access_registry = winreg.ConnectRegistry(None,winreg.HKEY_LOCAL_MACHINE)
+    access_key = winreg.OpenKey(access_registry, "SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
+
+    verify_win_reg(access_key, "SPLUNK_CONFIG", "{SPLUNK_CONFIG}")
+    verify_win_reg(access_key, "SPLUNK_ACCESS_TOKEN", "{SPLUNK_ACCESS_TOKEN}")
+    verify_win_reg(access_key, "SPLUNK_REALM", "{SPLUNK_REALM}")
+    verify_win_reg(access_key, "SPLUNK_API_URL", "{SPLUNK_API_URL}")
+    verify_win_reg(access_key, "SPLUNK_INGEST_URL", "{SPLUNK_INGEST_URL}")
+    verify_win_reg(access_key, "SPLUNK_TRACE_URL", "{SPLUNK_INGEST_URL}/v2/trace")
+    verify_win_reg(access_key, "SPLUNK_HEC_URL", "{SPLUNK_INGEST_URL}/v1/log")
+    verify_win_reg(access_key, "SPLUNK_HEC_TOKEN", "{SPLUNK_ACCESS_TOKEN}")
+    verify_win_reg(access_key, "SPLUNK_MEMORY_TOTAL_MIB", "{SPLUNK_MEMORY_TOTAL_MIB}")
+    verify_win_reg(access_key, "SPLUNK_BUNDLE_DIR", "{SPLUNK_BUNDLE_DIR}")
+    verify_win_reg(access_key, "SPLUNK_COLLECTD_DIR", "{SPLUNK_COLLECTD_DIR}")
 
 def run_win_chef_setup(chef_version):
     assert has_choco(), "choco not installed!"
