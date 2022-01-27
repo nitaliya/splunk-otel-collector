@@ -207,17 +207,17 @@ def verify_win_env():
     access_registry = winreg.ConnectRegistry(None,winreg.HKEY_LOCAL_MACHINE)
     access_key = winreg.OpenKey(access_registry, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
 
-    verify_win_reg(access_key, "SPLUNK_CONFIG", "{SPLUNK_CONFIG}")
-    verify_win_reg(access_key, "SPLUNK_ACCESS_TOKEN", "{SPLUNK_ACCESS_TOKEN}")
-    verify_win_reg(access_key, "SPLUNK_REALM", "{SPLUNK_REALM}")
-    verify_win_reg(access_key, "SPLUNK_API_URL", "{SPLUNK_API_URL}")
-    verify_win_reg(access_key, "SPLUNK_INGEST_URL", "{SPLUNK_INGEST_URL}")
+    verify_win_reg(access_key, "SPLUNK_CONFIG", SPLUNK_CONFIG)
+    verify_win_reg(access_key, "SPLUNK_ACCESS_TOKEN", SPLUNK_ACCESS_TOKEN)
+    verify_win_reg(access_key, "SPLUNK_REALM", SPLUNK_REALM)
+    verify_win_reg(access_key, "SPLUNK_API_URL", SPLUNK_API_URL)
+    verify_win_reg(access_key, "SPLUNK_INGEST_URL", SPLUNK_INGEST_URL)
     verify_win_reg(access_key, "SPLUNK_TRACE_URL", "{SPLUNK_INGEST_URL}/v2/trace")
     verify_win_reg(access_key, "SPLUNK_HEC_URL", "{SPLUNK_INGEST_URL}/v1/log")
-    verify_win_reg(access_key, "SPLUNK_HEC_TOKEN", "{SPLUNK_ACCESS_TOKEN}")
-    verify_win_reg(access_key, "SPLUNK_MEMORY_TOTAL_MIB", "{SPLUNK_MEMORY_TOTAL_MIB}")
-    verify_win_reg(access_key, "SPLUNK_BUNDLE_DIR", "{SPLUNK_BUNDLE_DIR}")
-    verify_win_reg(access_key, "SPLUNK_COLLECTD_DIR", "{SPLUNK_COLLECTD_DIR}")
+    verify_win_reg(access_key, "SPLUNK_HEC_TOKEN", SPLUNK_ACCESS_TOKEN)
+    verify_win_reg(access_key, "SPLUNK_MEMORY_TOTAL_MIB", SPLUNK_MEMORY_TOTAL_MIB)
+    verify_win_reg(access_key, "SPLUNK_BUNDLE_DIR", SPLUNK_BUNDLE_DIR)
+    verify_win_reg(access_key, "SPLUNK_COLLECTD_DIR", SPLUNK_COLLECTD_DIR)
 
 def run_win_chef_setup(chef_version):
     assert has_choco(), "choco not installed!"
