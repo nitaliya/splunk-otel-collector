@@ -62,9 +62,9 @@ SPLUNK_SERVICE_GROUP = "splunk-otel-collector"
 SPLUNK_MEMORY_TOTAL_MIB = 512
 SPLUNK_BUNDLE_DIR = "/usr/lib/splunk-otel-collector/agent-bundle"
 SPLUNK_COLLECTD_DIR = f"{SPLUNK_BUNDLE_DIR}/run/collectd"
-WIN_SPLUNK_CONFIG = "C:\ProgramData\Splunk\OpenTelemetry Collector\\agent_config.yaml"
-WIN_SPLUNK_BUNDLE_DIR = "C:\Program Files\Splunk\OpenTelemetry Collector\\agent-bundle"
-WIN_SPLUNK_COLLECTD_DIR = f"{WIN_SPLUNK_BUNDLE_DIR}\\run\collectd"
+WIN_SPLUNK_CONFIG = "C:\\ProgramData\\Splunk\\OpenTelemetry Collector\\agent_config.yaml"
+WIN_SPLUNK_BUNDLE_DIR = "C:\\Program Files\\Splunk\\OpenTelemetry Collector\\agent-bundle"
+WIN_SPLUNK_COLLECTD_DIR = f"{WIN_SPLUNK_BUNDLE_DIR}\\run\\collectd"
 
 # allow CHEF_VERSIONS env var with comma-separated chef versions for test parameterization
 # CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
@@ -208,7 +208,7 @@ def verify_win_reg(access_key, name, value):
 
 def verify_win_env():
     access_registry = winreg.ConnectRegistry(None,winreg.HKEY_LOCAL_MACHINE)
-    access_key = winreg.OpenKey(access_registry, "SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
+    access_key = winreg.OpenKey(access_registry, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment")
 
     verify_win_reg(access_key, "SPLUNK_CONFIG", WIN_SPLUNK_CONFIG)
     verify_win_reg(access_key, "SPLUNK_ACCESS_TOKEN", SPLUNK_ACCESS_TOKEN)
