@@ -59,7 +59,16 @@ jobs:
         run: |
           pip install --upgrade 'pip==${{ env.PIP_VERSION }}'
           pip install -r "${{ env.REQUIREMENTS_PATH }}"
-      
+
+      - name: Test chef deployment
+        timeout-minutes: 45
+        run: |
+          New-Item -Path ~/testresults -ItemType Directory
+          pytest -n2 --verbose -m ${{ matrix.PACKAGE_TYPE }} \
+            --junitxml=${{ env.RESULT_PATH }}/results.xml \
+            --html=${{ env.RESULT_PATH }}/results.html \
+            --self-contained-html \
+            internal/buildscripts/packaging/tests/deployments/chef/chef_test.py
 
   # chef-test:
   #   name: chef-test
