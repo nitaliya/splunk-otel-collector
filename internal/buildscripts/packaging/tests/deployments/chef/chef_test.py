@@ -62,7 +62,7 @@ SPLUNK_BUNDLE_DIR = "/usr/lib/splunk-otel-collector/agent-bundle"
 SPLUNK_COLLECTD_DIR = f"{SPLUNK_BUNDLE_DIR}/run/collectd"
 
 # allow CHEF_VERSIONS env var with comma-separated chef versions for test parameterization
-CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0,latest").split(",")
+CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
 # CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
 
 CHEF_CMD = "chef-client -z -o 'recipe[splunk-otel-collector::default]' -j /root/test_attrs.json"
