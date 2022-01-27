@@ -174,7 +174,7 @@ def test_chef_with_fluentd(distro, chef_version):
                 if container.exec_run("test -f /var/log/td-agent/td-agent.log").exit_code == 0:
                     run_container_cmd(container, "cat /var/log/td-agent/td-agent.log")
 
-def run_win_chef_client(configs, chef_version, CHEF_CMD):
+def run_win_chef_apply(configs, chef_version, CHEF_CMD):
     attributes_path = r"C:\chef\cookbooks\attributes.json"
     with open(attributes_path, "w+", encoding="utf-8") as fd:
         print(json.dumps(configs))
@@ -234,6 +234,6 @@ def test_chef_with_fluentd_on_windows(chef_version):
             configs["splunk-otel-collector"]["splunk_service_group"] = SPLUNK_SERVICE_GROUP
             configs["splunk-otel-collector"]["with_fluentd"] = True
             configs["splunk-otel-collector"]["collector_version"] = collector_version
-            run_chef_apply(configs, chef_version, CHEF_CMD)
+            run_win_chef_apply(configs, chef_version, CHEF_CMD)
     finally:
         print("Done")
