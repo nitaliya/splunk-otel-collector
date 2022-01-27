@@ -43,7 +43,7 @@ WIN_GEM_BIN_DIR = r"C:\opscode\chef\embedded\bin"
 WIN_CHEF_COOKBOOKS_DIR = r"C:\chef\cookbooks"
 WIN_COOKBOOK_SRC_DIR = os.path.join(WIN_REPO_ROOT_DIR, "deployments", "chef")
 WIN_COOKBOOK_DEST_DIR = os.path.join(WIN_CHEF_COOKBOOKS_DIR, "splunk-otel-collector")
-RUBYZIP_VERSION = "< 2.0.0"
+RUBYZIP_VERSION = "1.3.0"
 
 IMAGES_DIR = Path(__file__).parent.resolve() / "images"
 DEB_DISTROS = [df.split(".")[-1] for df in glob.glob(str(IMAGES_DIR / "deb" / "Dockerfile.*"))]
@@ -190,12 +190,6 @@ def run_win_chef_setup(chef_version):
         shutil.rmtree(WIN_COOKBOOK_DEST_DIR)
     shutil.copytree(WIN_COOKBOOK_SRC_DIR, WIN_COOKBOOK_DEST_DIR)
     run_win_command(f'powershell -command "gem install rubyzip -q -v "{RUBYZIP_VERSION}""')
-    print(WIN_CHEF_BIN_DIR)
-    print(WIN_GEM_BIN_DIR)
-    print(WIN_CHEF_COOKBOOKS_DIR)
-    print(WIN_COOKBOOK_SRC_DIR)
-    print(WIN_COOKBOOK_DEST_DIR)
-    assert 0
 
 @pytest.mark.windows_only
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
