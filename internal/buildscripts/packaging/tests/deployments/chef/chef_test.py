@@ -15,6 +15,7 @@
 import json
 import glob
 import os
+import shutil
 import string
 import tempfile
 import sys
@@ -30,11 +31,19 @@ from tests.helpers.util import (
     service_is_running,
     wait_for,
     has_choco,
+    run_win_command,
     REPO_DIR,
     SERVICE_NAME,
     SERVICE_OWNER,
+    WIN_REPO_ROOT_DIR,
 )
 
+WIN_CHEF_BIN_DIR = r"C:\opscode\chef\bin"
+WIN_GEM_BIN_DIR = r"C:\opscode\chef\embedded\bin"
+WIN_CHEF_COOKBOOKS_DIR = r"C:\chef\cookbooks"
+WIN_COOKBOOK_SRC_DIR = os.path.join(WIN_REPO_ROOT_DIR, "deployments", "chef")
+WIN_COOKBOOK_DEST_DIR = os.path.join(WIN_CHEF_COOKBOOKS_DIR, "splunk-otel-collector")
+RUBYZIP_VERSION = "1.3.0"
 
 IMAGES_DIR = Path(__file__).parent.resolve() / "images"
 DEB_DISTROS = [df.split(".")[-1] for df in glob.glob(str(IMAGES_DIR / "deb" / "Dockerfile.*"))]
@@ -53,8 +62,8 @@ SPLUNK_BUNDLE_DIR = "/usr/lib/splunk-otel-collector/agent-bundle"
 SPLUNK_COLLECTD_DIR = f"{SPLUNK_BUNDLE_DIR}/run/collectd"
 
 # allow CHEF_VERSIONS env var with comma-separated chef versions for test parameterization
-# CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0,latest").split(",")
-CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
+CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0,latest").split(",")
+# CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
 
 CHEF_CMD = "chef-client -z -o 'recipe[splunk-otel-collector::default]' -j /root/test_attrs.json"
 
@@ -166,27 +175,26 @@ def test_chef_with_fluentd(distro, chef_version):
 
 def run_win_chef_setup(chef_version):
     assert has_choco(), "choco not installed!"
-    # uninstall_win_agent()
-    # if run_win_command("chef-client --version", []).returncode == 0:
-    #     run_win_command("choco uninstall -y -f chef-client")
-    # if chef_version == "latest":
-    #     run_win_command(f"choco upgrade -y -f chef-client")
-    # else:
-    #     run_win_command(f"choco upgrade -y -f chef-client --version {chef_version}")
-    # if WIN_CHEF_BIN_DIR not in os.environ.get("PATH"):
-    #     os.environ["PATH"] = WIN_CHEF_BIN_DIR + ";" + os.environ.get("PATH")
-    # if WIN_GEM_BIN_DIR not in os.environ.get("PATH"):
-    #     os.environ["PATH"] = WIN_GEM_BIN_DIR + ";" + os.environ.get("PATH")
-    # os.makedirs(WIN_CHEF_COOKBOOKS_DIR, exist_ok=True)
-    # if os.path.isdir(WIN_AGENT_COOKBOOK_DEST_DIR):
-    #     shutil.rmtree(WIN_AGENT_COOKBOOK_DEST_DIR)
-    # shutil.copytree(WIN_AGENT_COOKBOOK_SRC_DIR, WIN_AGENT_COOKBOOK_DEST_DIR)
-    # if not os.path.isdir(WINDOWS_COOKBOOK_DIR):
-    #     run_win_command(
-    #         f'powershell -command "curl -outfile windows.tar.gz {WINDOWS_COOKBOOK_URL}"', cwd=WIN_CHEF_COOKBOOKS_DIR
-    #     )
-    #     run_win_command('powershell -command "tar -zxvf windows.tar.gz"', cwd=WIN_CHEF_COOKBOOKS_DIR)
-    # run_win_command(f'powershell -command "gem install rubyzip -q -v "{RUBYZIP_VERSION}""')
+    if run_win_command("chef-client --version", []).returncode == 0:
+        run_win_command("choco uninstall -y -f chef-client")
+    if chef_version == "latest":
+        run_win_command(f"choco upgrade -y -f chef-client")
+    else:
+        run_win_command(f"choco upgrade -y -f chef-client --version {chef_version}")
+    if WIN_CHEF_BIN_DIR not in os.environ.get("PATH"):
+        os.environ["PATH"] = WIN_CHEF_BIN_DIR + ";" + os.environ.get("PATH")
+    if WIN_GEM_BIN_DIR not in os.environ.get("PATH"):
+        os.environ["PATH"] = WIN_GEM_BIN_DIR + ";" + os.environ.get("PATH")
+    os.makedirs(WIN_CHEF_COOKBOOKS_DIR, exist_ok=True)
+    if os.path.isdir(WIN_COOKBOOK_DEST_DIR):
+        shutil.rmtree(WIN_COOKBOOK_DEST_DIR)
+    shutil.copytree(WIN_COOKBOOK_SRC_DIR, WIN_COOKBOOK_DEST_DIR)
+    if not os.path.isdir(WINDOWS_COOKBOOK_DIR):
+        run_win_command(
+            f'powershell -command "curl -outfile windows.tar.gz {WINDOWS_COOKBOOK_URL}"', cwd=WIN_CHEF_COOKBOOKS_DIR
+        )
+        run_win_command('powershell -command "tar -zxvf windows.tar.gz"', cwd=WIN_CHEF_COOKBOOKS_DIR)
+    run_win_command(f'powershell -command "gem install rubyzip -q -v "{RUBYZIP_VERSION}""')
 
 @pytest.mark.windows_only
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")

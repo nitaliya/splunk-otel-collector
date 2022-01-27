@@ -31,6 +31,7 @@ SERVICE_NAME = "splunk-otel-collector"
 SERVICE_OWNER = "splunk-otel-collector"
 OTELCOL_BIN = "/usr/bin/otelcol"
 DEFAULT_TIMEOUT = 10
+WIN_REPO_ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..", "..", "..", ".."))
 
 
 def retry(function, exception, max_attempts=5, interval=5):
