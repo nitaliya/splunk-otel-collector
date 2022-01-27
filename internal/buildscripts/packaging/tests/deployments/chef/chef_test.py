@@ -217,7 +217,7 @@ def verify_win_env():
     verify_win_reg(access_key, "SPLUNK_TRACE_URL", f"{SPLUNK_INGEST_URL}/v2/trace")
     verify_win_reg(access_key, "SPLUNK_HEC_URL", f"{SPLUNK_INGEST_URL}/v1/log")
     verify_win_reg(access_key, "SPLUNK_HEC_TOKEN", SPLUNK_ACCESS_TOKEN)
-    verify_win_reg(access_key, "SPLUNK_MEMORY_TOTAL_MIB", SPLUNK_MEMORY_TOTAL_MIB)
+    verify_win_reg(access_key, "SPLUNK_MEMORY_TOTAL_MIB", f"{SPLUNK_MEMORY_TOTAL_MIB}")
     verify_win_reg(access_key, "SPLUNK_BUNDLE_DIR", WIN_SPLUNK_BUNDLE_DIR)
     verify_win_reg(access_key, "SPLUNK_COLLECTD_DIR", SPLUNK_COLLECTD_DIR)
 
