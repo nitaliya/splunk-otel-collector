@@ -64,6 +64,7 @@ SPLUNK_BUNDLE_DIR = "/usr/lib/splunk-otel-collector/agent-bundle"
 SPLUNK_COLLECTD_DIR = f"{SPLUNK_BUNDLE_DIR}/run/collectd"
 WIN_SPLUNK_CONFIG = "C:\ProgramData\Splunk\OpenTelemetry Collector\\agent_config.yaml"
 WIN_SPLUNK_BUNDLE_DIR = "C:\Program Files\Splunk\OpenTelemetry Collector\\agent-bundle"
+WIN_SPLUNK_COLLECTD_DIR = f"{WIN_SPLUNK_BUNDLE_DIR}\\run\collectd"
 
 # allow CHEF_VERSIONS env var with comma-separated chef versions for test parameterization
 # CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
@@ -219,7 +220,7 @@ def verify_win_env():
     verify_win_reg(access_key, "SPLUNK_HEC_TOKEN", SPLUNK_ACCESS_TOKEN)
     verify_win_reg(access_key, "SPLUNK_MEMORY_TOTAL_MIB", f"{SPLUNK_MEMORY_TOTAL_MIB}")
     verify_win_reg(access_key, "SPLUNK_BUNDLE_DIR", WIN_SPLUNK_BUNDLE_DIR)
-    verify_win_reg(access_key, "SPLUNK_COLLECTD_DIR", SPLUNK_COLLECTD_DIR)
+    verify_win_reg(access_key, "SPLUNK_COLLECTD_DIR", WIN_SPLUNK_COLLECTD_DIR)
 
 def run_win_chef_setup(chef_version):
     assert has_choco(), "choco not installed!"
