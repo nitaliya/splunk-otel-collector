@@ -64,6 +64,8 @@ jobs:
         timeout-minutes: 45
         run: |
           New-Item -Path ${{ env.RESULT_PATH }} -ItemType Directory
+          pwd
+          ls
           pytest -n1 --verbose -m windows_only `
             --junitxml=${{ env.RESULT_PATH }}/results.xml `
             --html=${{ env.RESULT_PATH }}/results.html `
