@@ -181,6 +181,12 @@ def run_win_chef_setup(chef_version):
         run_win_command(f"choco upgrade -y -f chef-client")
     else:
         run_win_command(f"choco upgrade -y -f chef-client --version {chef_version}")
+    print(WIN_CHEF_BIN_DIR)
+    print(WIN_GEM_BIN_DIR)
+    print(WIN_CHEF_COOKBOOKS_DIR)
+    print(WIN_COOKBOOK_SRC_DIR)
+    print(WIN_COOKBOOK_DEST_DIR)
+    assert 0
     # if WIN_CHEF_BIN_DIR not in os.environ.get("PATH"):
     #     os.environ["PATH"] = WIN_CHEF_BIN_DIR + ";" + os.environ.get("PATH")
     # if WIN_GEM_BIN_DIR not in os.environ.get("PATH"):
