@@ -64,7 +64,7 @@ jobs:
         timeout-minutes: 45
         run: |
           New-Item -Path ${{ env.RESULT_PATH }} -ItemType Directory
-          pytest -n2 --verbose -m ${{ matrix.PACKAGE_TYPE }} `
+          pytest -n2 --verbose -m windows_only `
             --junitxml=${{ env.RESULT_PATH }}/results.xml `
             --html=${{ env.RESULT_PATH }}/results.html `
             --self-contained-html `
@@ -73,7 +73,7 @@ jobs:
       - name: Uploading test result
         uses: actions/upload-artifact@v2
         with:
-          name: chef-windows-test-${{ matrix.PACKAGE_TYPE }}-result
+          name: chef-windows-test-result
           path: ${{ env.RESULT_PATH }}
 
   # chef-test:
