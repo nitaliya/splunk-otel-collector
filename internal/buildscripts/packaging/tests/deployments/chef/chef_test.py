@@ -62,8 +62,8 @@ SPLUNK_SERVICE_GROUP = "splunk-otel-collector"
 SPLUNK_MEMORY_TOTAL_MIB = 512
 SPLUNK_BUNDLE_DIR = "/usr/lib/splunk-otel-collector/agent-bundle"
 SPLUNK_COLLECTD_DIR = f"{SPLUNK_BUNDLE_DIR}/run/collectd"
-WIN_SPLUNK_CONFIG = "C:\ProgramData\Splunk\OpenTelemetry Collector\agent_config.yaml"
-WIN_SPLUNK_BUNDLE_DIR = "C:\Program Files\Splunk\OpenTelemetry Collector\agent-bundle'"
+WIN_SPLUNK_CONFIG = "C:\ProgramData\Splunk\OpenTelemetry Collector\\agent_config.yaml"
+WIN_SPLUNK_BUNDLE_DIR = "C:\Program Files\Splunk\OpenTelemetry Collector\\agent-bundle'"
 
 # allow CHEF_VERSIONS env var with comma-separated chef versions for test parameterization
 # CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
