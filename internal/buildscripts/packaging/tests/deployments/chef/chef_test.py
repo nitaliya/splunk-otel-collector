@@ -189,13 +189,13 @@ def run_win_chef_setup(chef_version):
     if os.path.isdir(WIN_COOKBOOK_DEST_DIR):
         shutil.rmtree(WIN_COOKBOOK_DEST_DIR)
     shutil.copytree(WIN_COOKBOOK_SRC_DIR, WIN_COOKBOOK_DEST_DIR)
+    run_win_command(f'powershell -command "gem install rubyzip -q -v "{RUBYZIP_VERSION}""')
     print(WIN_CHEF_BIN_DIR)
     print(WIN_GEM_BIN_DIR)
     print(WIN_CHEF_COOKBOOKS_DIR)
     print(WIN_COOKBOOK_SRC_DIR)
     print(WIN_COOKBOOK_DEST_DIR)
     assert 0
-    # run_win_command(f'powershell -command "gem install rubyzip -q -v "{RUBYZIP_VERSION}""')
 
 @pytest.mark.windows_only
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
