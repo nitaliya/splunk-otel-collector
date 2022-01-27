@@ -181,15 +181,15 @@ def run_win_chef_setup(chef_version):
         run_win_command(f"choco upgrade -y -f chef-client")
     else:
         run_win_command(f"choco upgrade -y -f chef-client --version {chef_version}")
-    if WIN_CHEF_BIN_DIR not in os.environ.get("PATH"):
-        os.environ["PATH"] = WIN_CHEF_BIN_DIR + ";" + os.environ.get("PATH")
-    if WIN_GEM_BIN_DIR not in os.environ.get("PATH"):
-        os.environ["PATH"] = WIN_GEM_BIN_DIR + ";" + os.environ.get("PATH")
-    os.makedirs(WIN_CHEF_COOKBOOKS_DIR, exist_ok=True)
-    if os.path.isdir(WIN_COOKBOOK_DEST_DIR):
-        shutil.rmtree(WIN_COOKBOOK_DEST_DIR)
-    shutil.copytree(WIN_COOKBOOK_SRC_DIR, WIN_COOKBOOK_DEST_DIR)
-    run_win_command(f'powershell -command "gem install rubyzip -q -v "{RUBYZIP_VERSION}""')
+    # if WIN_CHEF_BIN_DIR not in os.environ.get("PATH"):
+    #     os.environ["PATH"] = WIN_CHEF_BIN_DIR + ";" + os.environ.get("PATH")
+    # if WIN_GEM_BIN_DIR not in os.environ.get("PATH"):
+    #     os.environ["PATH"] = WIN_GEM_BIN_DIR + ";" + os.environ.get("PATH")
+    # os.makedirs(WIN_CHEF_COOKBOOKS_DIR, exist_ok=True)
+    # if os.path.isdir(WIN_COOKBOOK_DEST_DIR):
+    #     shutil.rmtree(WIN_COOKBOOK_DEST_DIR)
+    # shutil.copytree(WIN_COOKBOOK_SRC_DIR, WIN_COOKBOOK_DEST_DIR)
+    # run_win_command(f'powershell -command "gem install rubyzip -q -v "{RUBYZIP_VERSION}""')
 
 @pytest.mark.windows_only
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
