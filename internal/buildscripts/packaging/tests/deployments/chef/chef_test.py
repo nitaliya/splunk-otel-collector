@@ -205,7 +205,7 @@ def verify_win_reg(access_key, name, value):
 
 def verify_win_env():
     access_registry = winreg.ConnectRegistry(None,winreg.HKEY_LOCAL_MACHINE)
-    access_key = winreg.OpenKey(access_registry, "SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
+    access_key = winreg.OpenKey(access_registry, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
 
     verify_win_reg(access_key, "SPLUNK_CONFIG", "{SPLUNK_CONFIG}")
     verify_win_reg(access_key, "SPLUNK_ACCESS_TOKEN", "{SPLUNK_ACCESS_TOKEN}")
