@@ -62,8 +62,8 @@ SPLUNK_BUNDLE_DIR = "/usr/lib/splunk-otel-collector/agent-bundle"
 SPLUNK_COLLECTD_DIR = f"{SPLUNK_BUNDLE_DIR}/run/collectd"
 
 # allow CHEF_VERSIONS env var with comma-separated chef versions for test parameterization
-CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
-# CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
+# CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
+CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
 
 CHEF_CMD = "chef-client -z -o 'recipe[splunk-otel-collector::default]' -j /root/test_attrs.json"
 
@@ -181,16 +181,16 @@ def run_win_chef_setup(chef_version):
         run_win_command(f"choco upgrade -y -f chef-client")
     else:
         run_win_command(f"choco upgrade -y -f chef-client --version {chef_version}")
+    if WIN_CHEF_BIN_DIR not in os.environ.get("PATH"):
+        os.environ["PATH"] = WIN_CHEF_BIN_DIR + ";" + os.environ.get("PATH")
+    if WIN_GEM_BIN_DIR not in os.environ.get("PATH"):
+        os.environ["PATH"] = WIN_GEM_BIN_DIR + ";" + os.environ.get("PATH")
     print(WIN_CHEF_BIN_DIR)
     print(WIN_GEM_BIN_DIR)
     print(WIN_CHEF_COOKBOOKS_DIR)
     print(WIN_COOKBOOK_SRC_DIR)
     print(WIN_COOKBOOK_DEST_DIR)
     assert 0
-    # if WIN_CHEF_BIN_DIR not in os.environ.get("PATH"):
-    #     os.environ["PATH"] = WIN_CHEF_BIN_DIR + ";" + os.environ.get("PATH")
-    # if WIN_GEM_BIN_DIR not in os.environ.get("PATH"):
-    #     os.environ["PATH"] = WIN_GEM_BIN_DIR + ";" + os.environ.get("PATH")
     # os.makedirs(WIN_CHEF_COOKBOOKS_DIR, exist_ok=True)
     # if os.path.isdir(WIN_COOKBOOK_DEST_DIR):
     #     shutil.rmtree(WIN_COOKBOOK_DEST_DIR)
