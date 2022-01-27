@@ -199,30 +199,30 @@ def run_win_chef_apply(configs, chef_version, CHEF_CMD):
         assert proc.returncode == 0, output
         print(output)
 
-def verify_win_env(container):
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_CONFIG'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_ACCESS_TOKEN'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_REALM'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_API_URL'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_INGEST_URL'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_TRACE_URL'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_URL'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_TOKEN'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_MEMORY_TOTAL_MIB'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_BUNDLE_DIR'")
-    # run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_COLLECTD_DIR'")
+def verify_win_env():
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_CONFIG'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_ACCESS_TOKEN'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_REALM'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_API_URL'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_INGEST_URL'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_TRACE_URL'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_URL'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_TOKEN'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_MEMORY_TOTAL_MIB'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_BUNDLE_DIR'")
+    run_win_command("Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_COLLECTD_DIR'")
 
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_CONFIG') -ne '{SPLUNK_CONFIG}'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_ACCESS_TOKEN') -ne '{SPLUNK_ACCESS_TOKEN}'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_REALM') -ne '{SPLUNK_REALM}'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_API_URL') -ne '{SPLUNK_API_URL}'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_INGEST_URL') -ne '{SPLUNK_INGEST_URL}'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_TRACE_URL') -ne '{SPLUNK_INGEST_URL}/v2/trace'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_URL') -ne '{SPLUNK_INGEST_URL}/v1/log'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_TOKEN') -ne '{SPLUNK_ACCESS_TOKEN}'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_MEMORY_TOTAL_MIB') -ne '{SPLUNK_MEMORY_TOTAL_MIB}'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_BUNDLE_DIR') -ne '{SPLUNK_BUNDLE_DIR}'){exit 1}")
-    run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_COLLECTD_DIR') -ne '{SPLUNK_COLLECTD_DIR}'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_CONFIG') -ne '{SPLUNK_CONFIG}'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_ACCESS_TOKEN') -ne '{SPLUNK_ACCESS_TOKEN}'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_REALM') -ne '{SPLUNK_REALM}'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_API_URL') -ne '{SPLUNK_API_URL}'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_INGEST_URL') -ne '{SPLUNK_INGEST_URL}'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_TRACE_URL') -ne '{SPLUNK_INGEST_URL}/v2/trace'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_URL') -ne '{SPLUNK_INGEST_URL}/v1/log'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_HEC_TOKEN') -ne '{SPLUNK_ACCESS_TOKEN}'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_MEMORY_TOTAL_MIB') -ne '{SPLUNK_MEMORY_TOTAL_MIB}'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_BUNDLE_DIR') -ne '{SPLUNK_BUNDLE_DIR}'){exit 1}")
+    # run_win_command("if((Get-ItemPropertyValue -PATH '{REGKEY}' -name 'SPLUNK_COLLECTD_DIR') -ne '{SPLUNK_COLLECTD_DIR}'){exit 1}")
 
 def run_win_chef_setup(chef_version):
     assert has_choco(), "choco not installed!"
@@ -261,5 +261,6 @@ def test_chef_with_fluentd_on_windows(chef_version):
             configs["splunk-otel-collector"]["with_fluentd"] = True
             configs["splunk-otel-collector"]["collector_version"] = collector_version
             run_win_chef_apply(configs, chef_version, CHEF_CMD)
+            verify_win_env()
     finally:
         print("Done")
