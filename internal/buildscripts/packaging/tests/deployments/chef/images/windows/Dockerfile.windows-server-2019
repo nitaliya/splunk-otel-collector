@@ -7,4 +7,4 @@ RUN Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointMa
 
 RUN choco install -y -f chef-client
 
-RUN while(1){Start-Sleep 1000;}
+ENTRYPOINT [ "powershell.exe", "while(1){Start-Sleep 1000;}" ]
