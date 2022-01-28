@@ -70,7 +70,7 @@ def run_distro_container(distro, dockerfile=None, path=TESTS_DIR, buildargs=None
         start_time = time.time()
         while True:
             container.reload()
-            if container.attrs["NetworkSettings"]["IPAddress"]:
+            if container.attrs["NetworkSettings"]["Networks"]["nat"]["IPAddress"]:
                 break
             assert (time.time() - start_time) < timeout, "timed out waiting for container to start"
 
