@@ -66,8 +66,8 @@ WIN_SPLUNK_BUNDLE_DIR = "C:\\Program Files\\Splunk\\OpenTelemetry Collector\\age
 WIN_SPLUNK_COLLECTD_DIR = f"{WIN_SPLUNK_BUNDLE_DIR}\\run\\collectd"
 
 # allow CHEF_VERSIONS env var with comma-separated chef versions for test parameterization
-CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
-# CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
+# CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
+CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
 
 CHEF_CMD = "chef-client -z -o 'recipe[splunk-otel-collector::default]' -j {0}"
 
