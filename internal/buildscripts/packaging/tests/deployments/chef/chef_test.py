@@ -271,7 +271,7 @@ def run_win_chef_setup(chef_version):
 @pytest.mark.parametrize("chef_version", CHEF_VERSIONS)
 def test_chef_with_fluentd_on_windows(distro, chef_version):
     dockerfile = IMAGES_DIR / "windows" / f"Dockerfile.{distro}"
-    with run_distro_container(distro, dockerfile=dockerfile, path=REPO_DIR) as container:
+    with run_distro_container(distro, dockerfile=dockerfile, path=REPO_DIR, time=60) as container:
         print("Done")
         assert 0
     #     try:
