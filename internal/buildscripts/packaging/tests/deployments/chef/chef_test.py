@@ -271,15 +271,9 @@ def run_win_chef_setup(chef_version):
 @pytest.mark.parametrize("chef_version", CHEF_VERSIONS)
 def test_chef_with_fluentd_on_windows(distro, chef_version):
     dockerfile = IMAGES_DIR / "windows" / f"Dockerfile.{distro}"
-
-    buildargs = {"CHEF_INSTALLER_ARGS": ""}
-    if chef_version != "latest":
-        buildargs["CHEF_INSTALLER_ARGS"] = f"-v {chef_version}"
-
-    print(dockerfile)
-    print(buildargs)
-    assert 0
-    # with run_distro_container(distro, dockerfile=dockerfile, path=REPO_DIR, buildargs=buildargs) as container:
+    with run_distro_container(distro, dockerfile=dockerfile, path=REPO_DIR) as container:
+        print("Done")
+        assert 0
     #     try:
     #         for collector_version in ["0.34.0", "latest"]:
     #             configs = {}

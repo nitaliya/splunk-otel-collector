@@ -60,7 +60,8 @@ def run_distro_container(distro, dockerfile=None, path=TESTS_DIR, buildargs=None
     )
 
     container = client.containers.create(
-        image.id, detach=True, privileged=True, volumes={"/sys/fs/cgroup": {"bind": "/sys/fs/cgroup", "mode": "ro"}}
+        image.id, detach=True
+        # image.id, detach=True, privileged=True, volumes={"/sys/fs/cgroup": {"bind": "/sys/fs/cgroup", "mode": "ro"}}
     )
 
     try:
