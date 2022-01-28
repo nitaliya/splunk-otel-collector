@@ -49,6 +49,7 @@ RUBYZIP_VERSION = "1.3.0"
 IMAGES_DIR = Path(__file__).parent.resolve() / "images"
 DEB_DISTROS = [df.split(".")[-1] for df in glob.glob(str(IMAGES_DIR / "deb" / "Dockerfile.*"))]
 RPM_DISTROS = [df.split(".")[-1] for df in glob.glob(str(IMAGES_DIR / "rpm" / "Dockerfile.*"))]
+WINDOWS_DISTROS = [df.split(".")[-1] for df in glob.glob(str(IMAGES_DIR / "windows" / "Dockerfile.*"))]
 CONFIG_DIR = "/etc/otel/collector"
 SPLUNK_CONFIG = f"{CONFIG_DIR}/agent_config.yaml"
 SPLUNK_ENV_PATH = f"{CONFIG_DIR}/splunk-otel-collector.conf"
@@ -239,25 +240,67 @@ def run_win_chef_setup(chef_version):
     shutil.copytree(WIN_COOKBOOK_SRC_DIR, WIN_COOKBOOK_DEST_DIR)
     run_win_command(f'powershell -command "gem install rubyzip -q -v "{RUBYZIP_VERSION}""')
 
-@pytest.mark.windows_only
+# @pytest.mark.windows_only
+# @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
+# @pytest.mark.parametrize("chef_version", CHEF_VERSIONS)
+# def test_chef_with_fluentd_on_windows(chef_version):
+#     run_win_chef_setup(chef_version)
+#     try:
+#         for collector_version in ["0.34.0", "latest"]:
+#         # for collector_version in ["latest"]:
+#             configs = {}
+#             configs["splunk-otel-collector"] = {}
+#             configs["splunk-otel-collector"]["splunk_access_token"] = SPLUNK_ACCESS_TOKEN
+#             configs["splunk-otel-collector"]["splunk_realm"] = SPLUNK_REALM
+#             configs["splunk-otel-collector"]["splunk_ingest_url"] = SPLUNK_INGEST_URL
+#             configs["splunk-otel-collector"]["splunk_api_url"] = SPLUNK_API_URL
+#             configs["splunk-otel-collector"]["splunk_service_user"] = SPLUNK_SERVICE_USER
+#             configs["splunk-otel-collector"]["splunk_service_group"] = SPLUNK_SERVICE_GROUP
+#             configs["splunk-otel-collector"]["with_fluentd"] = True
+#             configs["splunk-otel-collector"]["collector_version"] = collector_version
+#             run_win_chef_apply(configs, chef_version, CHEF_CMD)
+#             verify_win_env()
+#     finally:
+#         print("Done")
+
 @pytest.mark.skipif(sys.platform != "win32", reason="only runs on windows")
+@pytest.mark.parametrize(
+    "distro",
+    [pytest.param(distro, marks=pytest.mark.windows) for distro in WINDOWS_DISTROS],
+    )
 @pytest.mark.parametrize("chef_version", CHEF_VERSIONS)
-def test_chef_with_fluentd_on_windows(chef_version):
-    run_win_chef_setup(chef_version)
-    try:
-        for collector_version in ["0.34.0", "latest"]:
-        # for collector_version in ["latest"]:
-            configs = {}
-            configs["splunk-otel-collector"] = {}
-            configs["splunk-otel-collector"]["splunk_access_token"] = SPLUNK_ACCESS_TOKEN
-            configs["splunk-otel-collector"]["splunk_realm"] = SPLUNK_REALM
-            configs["splunk-otel-collector"]["splunk_ingest_url"] = SPLUNK_INGEST_URL
-            configs["splunk-otel-collector"]["splunk_api_url"] = SPLUNK_API_URL
-            configs["splunk-otel-collector"]["splunk_service_user"] = SPLUNK_SERVICE_USER
-            configs["splunk-otel-collector"]["splunk_service_group"] = SPLUNK_SERVICE_GROUP
-            configs["splunk-otel-collector"]["with_fluentd"] = True
-            configs["splunk-otel-collector"]["collector_version"] = collector_version
-            run_win_chef_apply(configs, chef_version, CHEF_CMD)
-            verify_win_env()
-    finally:
-        print("Done")
+def test_chef_with_fluentd_on_windows(distro, chef_version):
+    dockerfile = IMAGES_DIR / "windows" / f"Dockerfile.{distro}"
+
+    buildargs = {"CHEF_INSTALLER_ARGS": ""}
+    if chef_version != "latest":
+        buildargs["CHEF_INSTALLER_ARGS"] = f"-v {chef_version}"
+
+    print(dockerfile)
+    print(buildargs)
+    assert 0
+    # with run_distro_container(distro, dockerfile=dockerfile, path=REPO_DIR, buildargs=buildargs) as container:
+    #     try:
+    #         for collector_version in ["0.34.0", "latest"]:
+    #             configs = {}
+    #             configs["splunk-otel-collector"] = {}
+    #             configs["splunk-otel-collector"]["splunk_access_token"] = SPLUNK_ACCESS_TOKEN
+    #             configs["splunk-otel-collector"]["splunk_realm"] = SPLUNK_REALM
+    #             configs["splunk-otel-collector"]["splunk_ingest_url"] = SPLUNK_INGEST_URL
+    #             configs["splunk-otel-collector"]["splunk_api_url"] = SPLUNK_API_URL
+    #             configs["splunk-otel-collector"]["splunk_service_user"] = SPLUNK_SERVICE_USER
+    #             configs["splunk-otel-collector"]["splunk_service_group"] = SPLUNK_SERVICE_GROUP
+    #             configs["splunk-otel-collector"]["with_fluentd"] = True
+    #             configs["splunk-otel-collector"]["collector_version"] = collector_version
+    #             run_chef_apply(container, configs, chef_version, CHEF_CMD)
+    #             verify_env_file(container)
+    #             assert wait_for(lambda: service_is_running(container))
+    #             if "opensuse" not in distro:
+    #                 assert container.exec_run("systemctl status td-agent").exit_code == 0
+    #     finally:
+    #         run_container_cmd(container, f"journalctl -u {SERVICE_NAME} --no-pager")
+    #         if "opensuse" not in distro:
+    #             run_container_cmd(container, "journalctl -u td-agent --no-pager")
+    #             if container.exec_run("test -f /var/log/td-agent/td-agent.log").exit_code == 0:
+    #                 run_container_cmd(container, "cat /var/log/td-agent/td-agent.log")
+
