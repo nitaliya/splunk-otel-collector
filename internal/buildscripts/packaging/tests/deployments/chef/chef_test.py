@@ -37,13 +37,12 @@ from tests.helpers.util import (
     REPO_DIR,
     SERVICE_NAME,
     SERVICE_OWNER,
-    WIN_REPO_ROOT_DIR,
 )
 
 WIN_CHEF_BIN_DIR = r"C:\opscode\chef\bin"
 WIN_GEM_BIN_DIR = r"C:\opscode\chef\embedded\bin"
 WIN_CHEF_COOKBOOKS_DIR = r"C:\chef\cookbooks"
-WIN_COOKBOOK_SRC_DIR = os.path.join(WIN_REPO_ROOT_DIR, "deployments", "chef")
+WIN_COOKBOOK_SRC_DIR = os.path.join(REPO_DIR, "deployments", "chef")
 WIN_COOKBOOK_DEST_DIR = os.path.join(WIN_CHEF_COOKBOOKS_DIR, "splunk-otel-collector")
 RUBYZIP_VERSION = "1.3.0"
 
@@ -67,8 +66,8 @@ WIN_SPLUNK_BUNDLE_DIR = "C:\\Program Files\\Splunk\\OpenTelemetry Collector\\age
 WIN_SPLUNK_COLLECTD_DIR = f"{WIN_SPLUNK_BUNDLE_DIR}\\run\\collectd"
 
 # allow CHEF_VERSIONS env var with comma-separated chef versions for test parameterization
-# CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
-CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
+CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "16.0.257,latest").split(",")
+# CHEF_VERSIONS = os.environ.get("CHEF_VERSIONS", "latest").split(",")
 
 CHEF_CMD = "chef-client -z -o 'recipe[splunk-otel-collector::default]' -j {0}"
 
@@ -246,8 +245,8 @@ def run_win_chef_setup(chef_version):
 def test_chef_with_fluentd_on_windows(chef_version):
     run_win_chef_setup(chef_version)
     try:
-        # for collector_version in ["0.34.0", "latest"]:
-        for collector_version in ["latest"]:
+        for collector_version in ["0.34.0", "latest"]:
+        # for collector_version in ["latest"]:
             configs = {}
             configs["splunk-otel-collector"] = {}
             configs["splunk-otel-collector"]["splunk_access_token"] = SPLUNK_ACCESS_TOKEN
