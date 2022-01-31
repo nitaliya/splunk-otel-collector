@@ -3,8 +3,8 @@ name: puppet-test
 # Only run tests for main branch or if the PR has relevant changes
 on: 
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
   pull_request:
     paths:
       - '.github/workflows/puppet-test.yml'
